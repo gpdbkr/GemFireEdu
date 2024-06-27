@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Organization: VMware, Inc.
+Title: gemfire
+Version: 10.1.0
+Created-By: root
+
