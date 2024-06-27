@@ -6,8 +6,6 @@ import org.apache.geode.cache.client.ClientCacheFactory;
 import org.apache.geode.cache.client.ClientRegionShortcut;
 import org.apache.geode.pdx.ReflectionBasedAutoSerializer;
 
-
-
 public class GemFireLabEx3 {
 
     final Region<Integer, President> region;
@@ -15,7 +13,6 @@ public class GemFireLabEx3 {
     public GemFireLabEx3(Region<Integer, President> region) {
         this.region = region;
     }
-
 
     public static void main(String[] args) {
         // Cache 생성
