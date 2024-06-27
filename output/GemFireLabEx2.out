@@ -1,0 +1,22 @@
+[info 2024/06/27 10:40:33.642 KST  <main> tid=0x1] Using org.apache.geode.logging.log4j.internal.impl.Log4jLoggingProvider from ServiceLoader for service org.apache.geode.logging.internal.spi.LoggingProvider
+
+Cache with Local Proxy Region for 'presidents' created successfully
+Data Inserted to Gemfire Successfully
+HashMap
+HashMap: President #4: James Madison
+HashMap: President #5: James Monroe
+HashMap: President #6: John Quincy Adams
+HashMap: President #7: Andew Jackson
+HashMap: President #8: Martin Van Buren
+HashMap: President #9: William Henry Harrison
+HashMap: President #10: John Tyler
+ConcurrentHashMap
+ConcurrentHashMap: President #4: James Madison
+ConcurrentHashMap: President #5: James Monroe
+ConcurrentHashMap: President #6: John Quincy Adams
+ConcurrentHashMap: President #7: Andew Jackson
+ConcurrentHashMap: President #8: Martin Van Buren
+ConcurrentHashMap: President #9: William Henry Harrison
+ConcurrentHashMap: President #10: John Tyler
+
+Process finished with exit code 0

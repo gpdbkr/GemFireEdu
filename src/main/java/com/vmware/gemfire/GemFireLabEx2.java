@@ -1,76 +1,69 @@
 package com.vmware.gemfire;
 
-import org.apache.geode.cache.Cache;
-import org.apache.geode.cache.CacheFactory;
 import org.apache.geode.cache.Region;
-import org.apache.geode.cache.RegionShortcut;
+import org.apache.geode.cache.client.ClientCache;
+import org.apache.geode.cache.client.ClientCacheFactory;
+import org.apache.geode.cache.client.ClientRegionShortcut;
+import org.apache.geode.distributed.ConfigurationProperties;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
-
-
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GemFireLabEx2 {
     public static void main(String[] args) {
-        // Cache 생성
-        Cache cache = new CacheFactory()
-                .set("log-level", "WARN")
-                .create();
-
-        // Region 생성
-        Region<String, String> region = cache.<String, String>createRegionFactory(RegionShortcut.REPLICATE)
-                .create("presidents");
-
-        // 데이터 삽입 시작 시간
-        long startInsertTime = System.currentTimeMillis();
-
-        // 10,000건의 임의 데이터 생성 및 삽입
-        Random random = new Random();
-        for (int i = 1; i <= 10000; i++) {
-            String key = "key" + i;
-            String value = "value" + random.nextInt(10000);
-            region.put(key, value);
-        }
-
-        // 데이터 삽입 종료 시간
-        long endInsertTime = System.currentTimeMillis();
-        // 종료시간 - 시작시간
-        System.out.println("Data insertion time: " + (endInsertTime - startInsertTime) + " ms");
-
-        // 데이터 조회 시작 시간 기록
-        long startQueryTime = System.currentTimeMillis();
-
-        // 10,000건의 데이터 조회
-        Map<String, String> results = new HashMap<>();
-        for (int i = 1; i <= 10000; i++) {
-            String key = "key" + i;
-            String value = region.get(key);
-            results.put(key, value);
-        }
-
-        // 데이터 조회 종료 시간 기록
-        long endQueryTime = System.currentTimeMillis();
-        // 종료시간 - 시작시간
-        System.out.println("HashMap Data select query time: " + (endQueryTime - startQueryTime) + " ms");
-
-        // 결과 출력 (생략 가능,hashMap)
-        //for (Map.Entry<String, String> entry : results.entrySet()) {
-        //    System.out.println(entry.getKey() + ": " + entry.getValue());
-        //}
         String p_value;
-        long startQueryTime2 = System.currentTimeMillis();
-        for (int i = 1; i <= 10000; i++) {
+        ClientCache cache;
+        ClientCacheFactory factory;
+        Region<Integer, String> region;
+
+        factory = new ClientCacheFactory();
+
+        // Specify Locator Host and Port that is running
+        // change logging to be less verbose then default INFO
+        factory.addPoolLocator("127.0.0.1", 10334);
+        factory.set(ConfigurationProperties.LOG_LEVEL, "warn");
+        cache = factory.create();
+
+        // configure and create local proxy Region named example
+        region = cache.<Integer, String>createClientRegionFactory( ClientRegionShortcut.PROXY).create("presidents");
+
+        System.out.println("Cache with Local Proxy Region for 'presidents' created successfully");
+
+        // create data
+        region.put(4, "James Madison");
+        region.put(5, "James Monroe");
+        region.put(6, "John Quincy Adams");
+        region.put(7, "Andew Jackson");
+        region.put(8, "Martin Van Buren");
+        region.put(9, "William Henry Harrison");
+        region.put(10, "John Tyler");
+
+        System.out.println("Data Inserted to Gemfire Successfully");
+
+        //Hash Map
+        System.out.println("HashMap");
+        Map<Integer, String> hashMap = new HashMap<>();
+        for (int i = 4; i <= 10; i++) {
 
             p_value = region.get(i);
-            // 결과 출력 (생략 가능,one by one fetch)
-            //System.out.println(p_value);
-            //System.out.println(entry.getKey() + ": " + entry.getValue());
+            hashMap.put(i, p_value);
         }
-        long endQueryTime2 = System.currentTimeMillis();
-        System.out.println("One by one fetch Data select query time: " + (endQueryTime2 - startQueryTime2) + " ms");
+        for (Map.Entry<Integer, String> entry : hashMap.entrySet()) {
+            System.out.println("HashMap: President #" + entry.getKey() + ": " + entry.getValue());
+        }
 
-        // Cache 종료
+        //ConcurrentHashMap
+        System.out.println("ConcurrentHashMap");
+        ConcurrentHashMap<Integer, String> conMap = new ConcurrentHashMap<>();
+        for (int i = 4; i <= 10; i++) {
+
+            p_value = region.get(i);
+            conMap.put(i, p_value);
+        }
+        for (ConcurrentHashMap.Entry<Integer, String> entry : conMap.entrySet()) {
+            System.out.println("ConcurrentHashMap: President #" + entry.getKey() + ": " + entry.getValue());
+        }
         cache.close();
     }
 }
